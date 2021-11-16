@@ -1,4 +1,4 @@
-﻿/*using DataAccess.Context;
+﻿using DataAccess.Context;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -8,10 +8,10 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    public class BlogRepository : IBlogRepository
+    class FileTransferRepository : IFileTransferRepository
     {
         public BloggingContext context { get; set; }
-        public BlogRepository(BloggingContext _context)
+        public IFileTransferRepository(BloggingContext _context)
         {
             context = _context;
         }
@@ -51,4 +51,3 @@ namespace DataAccess.Repositories
         }
     }
 }
-*/
