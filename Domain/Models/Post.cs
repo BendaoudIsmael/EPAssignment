@@ -12,12 +12,11 @@ namespace Domain.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public DateTime DateCreated { get; set; }
+
         public string Content { get; set; }
 
         [ForeignKey("Blog")]
         public int BlogId { get; set; }
-
         public Blog Blog { get; set; }
-
     }
 }

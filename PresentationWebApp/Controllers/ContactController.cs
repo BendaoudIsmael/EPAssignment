@@ -15,12 +15,16 @@ namespace PresentationWebApp.Controllers
 
         public IActionResult HandleQuery(string query)
         {
-           
-            ViewBag.Message = "Your query was recieved";
+            //process the query e.g. save it in db, or send out an email
 
-            //process the query e.g save it in the Database. Or send out an email
-            return View("Index"); //this sends back the index.cshtml page to the user
-                                  
+            if (string.IsNullOrEmpty(query) == false)
+                ViewBag.Message = "Your query was received!";
+            else ViewBag.Message = "No query was input";
+
+
+            return View("Index"); //sends back the Index.cshtml page to the user
+                                  //return View() will send back a page having the same name as the method
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels;
+using DataAccess.Repositories;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,13 @@ using System.Text;
 
 namespace Application.Services
 {
-    public class BlogService : IBlogservice
+    public class BlogService : IBlogService
     {
         private IBlogRepository blogRepo;
-        
-        public BlogService(IBlogRepository _blogRepo)
+        public BlogService(IBlogRepository _blogRepo )
         {
             blogRepo = _blogRepo;
         }
-
 
         public void AddBlog(BlogCreationModel b)
         {
@@ -63,7 +62,7 @@ namespace Application.Services
 
             List<BlogViewModel> myResults = new List<BlogViewModel>();
 
-            foreach(var b in list) //this foreach loop is covering from List<Blog> to List<BlogViewModel>
+            foreach(var b in list) //this foreach loop is converting from List<Blog> to List<BlogViewModel>
             {
                 myResults.Add(new BlogViewModel()
                 {
@@ -71,9 +70,22 @@ namespace Application.Services
                     Category = b.Category,
                     DateUpdated = b.DateUpdated,
                     LogoImagePath = b.LogoImagePath,
-                    Name = b.Name
+                    Name = b.Name,
+                     
                 });
             }
+
+            //instead of the foreach loop above you can use LINQ to transform from List<Blog> to List<BlogViewModel>
+            //var myResultsv2 = from b in list
+            //                  select new BlogViewModel
+            //                  {
+            //                      Id = b.Id,
+            //                      Category = b.Category,
+            //                      DateUpdated = b.DateUpdated,
+            //                      LogoImagePath = b.LogoImagePath,
+            //                      Name = b.Name
+            //                  };
+
 
             return myResults.AsQueryable();
         }

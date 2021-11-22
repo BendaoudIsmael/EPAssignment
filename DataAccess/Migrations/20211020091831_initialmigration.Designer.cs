@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20211025101940_Fixing DateUpdated")]
-    partial class FixingDateUpdated
+    [Migration("20211020091831_initialmigration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

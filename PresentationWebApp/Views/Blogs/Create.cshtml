@@ -5,20 +5,19 @@
 
 <h1>Create</h1>
 
+@if (string.IsNullOrEmpty(ViewBag.Message) != true)
+{
+    <div class="alert alert-primary" role="alert">
+        @ViewBag.Message
+    </div>
+}
 
-@if (string.IsNullOrEmpty(ViewBag.Message) !=true)
-    {
-        <div class="alert-primary" role="alert">
-            @ViewBag.Message
-        </div>
-    }
-
-@if (string.IsNullOrEmpty(ViewBag.Error) !=true)
-            {
-                <div class="alert alert-danger" role="alert">
-                    @ViewBag.Error
-                </div>
-            }
+@if (string.IsNullOrEmpty(ViewBag.Error) != true)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
 
 <form action="/Blogs/Create" method="post" enctype="multipart/form-data">
 
@@ -30,20 +29,24 @@
 
         <tr>
             <td>Logo: </td>
-            <td><input name="logoFile" type="file" /></td>
+            <td><input type="file" name="logoFile" /></td>
         </tr>
 
         <tr>
             <td>Category: </td>
-            <td><select name="CategoryId">
-
-                    @foreach(var c in ViewBag.Categories)
-                {
+            <td>
+                <select name="CategoryId">
+                    @foreach (var c in ViewBag.Categories)
+                    {
                         <option value="@c.Id">@c.Name</option>
-                }
-                 </select></td>
+
+                    }
+                </select>
+            </td>
         </tr>
+
     </table>
 
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Submit" />
+
 </form>

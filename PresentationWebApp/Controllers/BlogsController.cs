@@ -14,34 +14,35 @@ namespace PresentationWebApp.Controllers
 {
     public class BlogsController : Controller
     {
-        private IBlogservice service;
+        private IWebHostEnvironment hostEnvironment;
+        private IBlogService service;
         private ICategoryService categoryService;
-        private IWebHostEnvironment hostEnviorment;
-
-        public BlogsController(IBlogservice _service, ICategoryService _categoryService, IWebHostEnvironment _hostEnviorment)
-            {
+        public BlogsController(IBlogService _service, ICategoryService _categoryService, IWebHostEnvironment _hostEnvironment)
+        {
             service = _service;
             categoryService = _categoryService;
-            hostEnviorment = _hostEnviorment;
-            }
-
+            hostEnvironment = _hostEnvironment;
+        }
 
         public IActionResult Index()
-        {
+        { 
             var list = service.GetBlogs();
             return View(list);
         }
 
+        [HttpGet]
         public IActionResult Details(int id)
         {
             var b = service.GetBlog(id);
-            return View (b);
+            return View(b);
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Create ()
         {
             var list = categoryService.GetCategories();
             ViewBag.Categories = list;
+
 
             return View();
         }
@@ -62,44 +63,51 @@ namespace PresentationWebApp.Controllers
                     {
                         //save the file
 
-                        //1. genereate a new UNIQUE filename for the file
-                        string newfilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName); //genereate a serial number which will be unique
+                        //1. generate a new unique filename for the file
 
-                        //2. get the absoulute path of the folder "Files"
-                        string absolutePath = hostEnviorment.WebRootPath + "\\Files\\" + newfilename;
+                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName);
 
-                        //3. save the file into the absoulute Path
+                        //2. get the absolute path of the folder "Files"
+                        string absolutePath = hostEnvironment.WebRootPath + "\\Files\\" + newFilename;
+
+                        //3. save the file into the absolute Path
                         using(FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
                         {
                             logoFile.CopyTo(fs);
                             fs.Close();
                         }
-                        model.LogoImagePath = "\\Files\\" + newfilename;
+                        model.LogoImagePath = "\\Files\\" + newFilename;
                     }
+
                     service.AddBlog(model);
                     ViewBag.Message = "Blog added successfully";
-                }  
+                }
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Blog was not added due to an error. try later";
-            }
+                //log ex
 
+                ViewBag.Error = "Blog was not added due to an error. try later";
+
+            }
             var list = categoryService.GetCategories();
             ViewBag.Categories = list;
             return View();
         }
+
+
 
         public IActionResult Delete (int id)
         {
             try
             {
                 var blog = service.GetBlog(id);
-                string absoulutePathOfImageToDelete = hostEnviorment.WebRootPath + blog.LogoImagePath;
+                string absolutePathOfImageToDelete = hostEnvironment.WebRootPath + blog.LogoImagePath;
 
                 service.DeleteBlog(id);
 
-                System.IO.File.Delete(absoulutePathOfImageToDelete);
+                System.IO.File.Delete(absolutePathOfImageToDelete);
+
                 //ViewBag.Message = "Blog deleted successfully";
 
                 TempData["Message"] = "Blog deleted successfully";
@@ -109,9 +117,12 @@ namespace PresentationWebApp.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            //ViewBag does not survive a redirection
+            //ViewBag/ViewData does not survive a redirection
             //TempData survives a redirection
+            //ControllerContext.HttpContext.Session survives every redirection but it saves the data on the server
+
             return RedirectToAction("Index");
         }
+
     }
 }
