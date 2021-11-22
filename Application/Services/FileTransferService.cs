@@ -9,13 +9,13 @@ using System.Text;
 
 namespace Application.Services
 {
-    public class FileTransferService : IFileTransferService
+    public class FileTransferService //: IFileTransferService
     {
-        private IFileTransferRepository fileTransferRepo;
-        public FileTransferService(IFileTransferRepository _fileTransferRepo)
-        {
-            fileTransferRepo = _fileTransferRepo;
-        }
+       // private IFileTransferRepository fileTransferRepo;
+       // public FileTransferService(IFileTransferRepository _fileTransferRepo)
+       // {
+        //    fileTransferRepo = _fileTransferRepo;
+       // }
         public void AddFileTransfer(FileTransferModel t) { 
         
         }
