@@ -8,18 +8,17 @@ using System.Text;
 
 namespace Application.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService: ICategoryService
     {
-        private ICategoryRepository CategoryRepo;
-
+        private ICategoryRepository categoryRepo;
         public CategoryService(ICategoryRepository _categoryRepo)
         {
-            CategoryRepo = _categoryRepo;
+            categoryRepo = _categoryRepo;
         }
 
         public IQueryable<Category> GetCategories()
         {
-            return CategoryRepo.GetCategories();
+            return categoryRepo.GetCategories();
         }
     }
 }

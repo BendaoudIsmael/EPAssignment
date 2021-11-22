@@ -7,12 +7,10 @@ using System.Text;
 
 namespace Application.Interfaces
 {
-    public interface IBlogservice
+    public interface IBlogService
     {
         public IQueryable<BlogViewModel> GetBlogs();
-
         public BlogViewModel GetBlog(int id);
-
         public void AddBlog(BlogCreationModel b);
 
         public void DeleteBlog(int id);

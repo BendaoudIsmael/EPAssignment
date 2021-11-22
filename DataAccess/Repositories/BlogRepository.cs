@@ -15,6 +15,7 @@ namespace DataAccess.Repositories
         {
             context = _context;
         }
+
         public void AddBlog(Blog b)
         {
             b.DateCreated = DateTime.Now;
@@ -26,14 +27,20 @@ namespace DataAccess.Repositories
         {
             context.Blogs.Remove(b);
             context.SaveChanges();
+
         }
 
         public Blog GetBlog(int id)
         {
             //lambda expression
 
-            //take x as an argument which will represent all the Blogs in the database
+            //take x as an argument which will represent all the Blogs in the db
+            //for each x (Blog), evaluate the condition: x.Id == id
+
             return context.Blogs.SingleOrDefault(x => x.Id == id);
+
+            //foreach (Blog x in context.Blogs)
+            //    if (x.Id == id) return x;
         }
 
         public IQueryable<Blog> GetBlogs()
@@ -44,6 +51,7 @@ namespace DataAccess.Repositories
         public void UpdateBlog(Blog b)
         {
             Blog originalBlog = GetBlog(b.Id);
+
             originalBlog.DateCreated = b.DateCreated;
             originalBlog.DateUpdated = DateTime.Now;
             originalBlog.LogoImagePath = b.LogoImagePath;

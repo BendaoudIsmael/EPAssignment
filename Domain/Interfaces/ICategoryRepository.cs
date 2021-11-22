@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Domain.Interfaces
 {
-    public interface ICategoryRepository
+   public  interface ICategoryRepository
     {
         public IQueryable<Category> GetCategories();
     }

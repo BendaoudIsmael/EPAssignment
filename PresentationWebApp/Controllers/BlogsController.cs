@@ -8,25 +8,24 @@ using Application.Interfaces;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using Microsoft.AspNetCore.Hosting; 
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace PresentationWebApp.Controllers
 {
-    [Authorize]
     public class BlogsController : Controller
     {
-        private IBlogservice service;
+        private IWebHostEnvironment hostEnvironment;
+        private IBlogService service;
         private ICategoryService categoryService;
-        private IWebHostEnvironment hostEnviorment;
-
-        public BlogsController(IBlogservice _service, ICategoryService _categoryService, IWebHostEnvironment _hostEnviorment)
-            {
+        private ILogger<BlogsController> logger;
+        public BlogsController(ILogger<BlogsController> _logger, IBlogService _service, ICategoryService _categoryService, IWebHostEnvironment _hostEnvironment)
+        {
+            logger = _logger;
             service = _service;
             categoryService = _categoryService;
-            hostEnviorment = _hostEnviorment;
-            }
-
+            hostEnvironment = _hostEnvironment;
+        }
 
         public IActionResult Index()
         {
@@ -34,16 +33,19 @@ namespace PresentationWebApp.Controllers
             return View(list);
         }
 
+        [HttpGet]
         public IActionResult Details(int id)
         {
             var b = service.GetBlog(id);
-            return View (b);
+            return View(b);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             var list = categoryService.GetCategories();
             ViewBag.Categories = list;
+
 
             return View();
         }
@@ -54,54 +56,65 @@ namespace PresentationWebApp.Controllers
         {
             try
             {
+                logger.Log(LogLevel.Information, "User accessed the Create method");
+
                 if (string.IsNullOrEmpty(model.Name))
                 {
                     ViewBag.Error = "Name should not be left empty";
                 }
                 else
                 {
-                    if(logoFile != null)
+                    if (logoFile != null)
                     {
                         //save the file
 
-                        //1. genereate a new UNIQUE filename for the file
-                        string newfilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName); //genereate a serial number which will be unique
+                        //1. generate a new unique filename for the file
 
-                        //2. get the absoulute path of the folder "Files"
-                        string absolutePath = hostEnviorment.WebRootPath + "\\Files\\" + newfilename;
+                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName);
+                        logger.Log(LogLevel.Information, $"Guid generated for file {logoFile.FileName} is {newFilename}");
 
-                        //3. save the file into the absoulute Path
-                        using(FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
+                        //2. get the absolute path of the folder "Files"
+                        string absolutePath = hostEnvironment.WebRootPath + "\\Files\\" + newFilename;
+                        logger.Log(LogLevel.Information, $"Absolute path read is {absolutePath}");
+                        //3. save the file into the absolute Path
+                        using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
                         {
                             logoFile.CopyTo(fs);
                             fs.Close();
                         }
-                        model.LogoImagePath = "\\Files\\" + newfilename;
+                        
+                        logger.Log(LogLevel.Information, "File was saved successfully");
+                        model.LogoImagePath = "\\Files\\" + newFilename;
                     }
+
                     service.AddBlog(model);
                     ViewBag.Message = "Blog added successfully";
-                }  
+                }
             }
             catch (Exception ex)
             {
+                //log ex
+                logger.Log(LogLevel.Error, ex, "Error occurred while uploading file " + logoFile.FileName);
                 ViewBag.Error = "Blog was not added due to an error. try later";
-            }
 
+            }
             var list = categoryService.GetCategories();
             ViewBag.Categories = list;
             return View();
         }
+
 
         public IActionResult Delete (int id)
         {
             try
             {
                 var blog = service.GetBlog(id);
-                string absoulutePathOfImageToDelete = hostEnviorment.WebRootPath + blog.LogoImagePath;
+                string absolutePathOfImageToDelete = hostEnvironment.WebRootPath + blog.LogoImagePath;
 
                 service.DeleteBlog(id);
 
-                System.IO.File.Delete(absoulutePathOfImageToDelete);
+                System.IO.File.Delete(absolutePathOfImageToDelete);
+
                 //ViewBag.Message = "Blog deleted successfully";
 
                 TempData["Message"] = "Blog deleted successfully";
@@ -111,9 +124,12 @@ namespace PresentationWebApp.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            //ViewBag does not survive a redirection
+            //ViewBag/ViewData does not survive a redirection
             //TempData survives a redirection
+            //ControllerContext.HttpContext.Session survives every redirection but it saves the data on the server
+
             return RedirectToAction("Index");
         }
+
     }
 }
