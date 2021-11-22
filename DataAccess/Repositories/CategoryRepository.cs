@@ -8,13 +8,15 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+   public class CategoryRepository: ICategoryRepository
     {
         public BloggingContext context { get; set; }
+
         public CategoryRepository(BloggingContext _context)
         {
             context = _context;
         }
+
         public IQueryable<Category> GetCategories()
         {
             return context.Categories;

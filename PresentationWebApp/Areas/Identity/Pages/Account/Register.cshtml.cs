@@ -46,11 +46,9 @@ namespace PresentationWebApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
 
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
 
             [Required]
             [EmailAddress]
@@ -81,12 +79,12 @@ namespace PresentationWebApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-               // var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var user = new CustomUser  { 
+                //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new CustomUser {
                     UserName = Input.Email,
                     Email = Input.Email,
-                     FirstName = Input.FirstName,
-                     LastName = Input.LastName
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

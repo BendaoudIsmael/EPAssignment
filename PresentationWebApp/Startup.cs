@@ -34,27 +34,20 @@ namespace PresentationWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BloggingContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+              options.UseSqlServer(
+                Configuration.GetConnectionString("DefaultConnection")));
 
 
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //  options.UseSqlServer(
-            //      Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<BloggingContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            //I am informing the injector class, what to initialize when it comes across the
-            //mentioned interfaces
-
-            services.AddScoped<IBlogService, BlogService>();
+            //informing the injector class what to inizilze when it comes acorss the mentioned interfaces
+            services.AddScoped<IBlogservice, BlogService>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

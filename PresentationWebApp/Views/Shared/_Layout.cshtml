@@ -25,15 +25,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if (User.Identity.IsAuthenticated)
+                        @if (Context.User.Identity.IsAuthenticated)
                         {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                                Blogs
+                                Dropdown
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="/Blogs/Index">List</a>
                                 <a class="dropdown-item" href="/Blogs/Create">Add Blog</a>
+                                <div class="dropdown-divider"></div>
                             </div>
                         </li>
                         }

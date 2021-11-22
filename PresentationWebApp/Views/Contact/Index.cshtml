@@ -5,12 +5,16 @@
 
 <h1>Contact</h1>
 
-<form action="\Contact\HandleQuery" method="post" >
+<form action="\Contact\HandleQuery" method="post">
     Question:<br />
+  <!--- <input type="text" class="form-control"/> -->
     <textarea class="form-control" rows="5" name="query">
     </textarea>
     <br />
-    <input type="submit"value="Submit" class="btn btn-outline-secondary" />
+    <input type="submit"value="Submit" class="btn btn-outline-secondary"/>
 </form>
 
- @ViewBag.Message
+@if(ViewBag != null)
+    @ViewBag.Message
+
+
