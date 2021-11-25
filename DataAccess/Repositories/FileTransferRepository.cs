@@ -18,17 +18,18 @@ namespace DataAccess.Repositories
 
         public void AddFile(File t)
         {
-            throw new NotImplementedException();
+            context.Files.Add(t);
+            context.SaveChanges();
         }
 
         public File GetFile(int id)
         {
-            throw new NotImplementedException();
+            return context.Files.SingleOrDefault(x => x.Id == id);
         }
 
         public IQueryable<File> GetTransfer()
         {
-            throw new NotImplementedException();
+            return context.Files;
         }
     }
 }

@@ -81,7 +81,7 @@ namespace PresentationWebApp.Areas.Identity.Pages.Account
             {
                 //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 var user = new CustomUser {
-                    //UserName = Input.Email,
+                  //UserName = Input.Email,
                     //Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName
