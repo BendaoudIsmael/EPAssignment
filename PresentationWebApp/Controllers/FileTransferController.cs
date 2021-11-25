@@ -17,11 +17,14 @@ namespace PresentationWebApp.Controllers
     {
         private IWebHostEnvironment hostEnvironment;
         private ILogger<FileTransferController> logger;
+        private IFileTransferService service;
 
-        public FileTransferController(ILogger<FileTransferController> _logger, IWebHostEnvironment _hostEnvironment)
+        public FileTransferController(ILogger<FileTransferController> _logger, IWebHostEnvironment _hostEnvironment, IFileTransferService _service)
         {
             logger = _logger;
             hostEnvironment = _hostEnvironment;
+            service = _service;
+
         }
 
         public IActionResult Index()
