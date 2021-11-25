@@ -8,9 +8,9 @@ namespace Domain.Interfaces
 {
     public interface IFileTransferRepository
     {
-        public IQueryable<FileTransfer> GetFiles();
-        public void AddFile(FileTransfer t);
-        public FileTransfer GetFile(int id);
+        public IQueryable<File> GetTransfer();
+        public void AddFile(File t);
+        public File GetFile(int id);
 
     }
 }

@@ -29,6 +29,7 @@ namespace PresentationWebApp.Controllers
 
         public IActionResult Index()
         {
+            var list = service.GetFiles();
             return View();
         }
         public IActionResult Create()

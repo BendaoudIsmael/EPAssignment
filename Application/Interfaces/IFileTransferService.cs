@@ -9,7 +9,7 @@ namespace Application.Interfaces
 {
     public interface IFileTransferService
     {
-        public IQueryable<FileTransferModel> GetFileTransfer();
+        public IQueryable<FileTransferModel> GetFiles();
         public void AddFileTransfer(FileTransferModel t);
     }
 }
