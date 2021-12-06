@@ -16,8 +16,18 @@ namespace Application.Services
        {
           fileTransferRepo = _fileTransferRepo;
        }
-        public void AddFileTransfer(FileTransferModel t) { 
-        
+
+        public void AddFileTransfer(FileTransferModel t) 
+        {
+            fileTransferRepo.AddFileTransfer(
+                new Domain.Models.File()
+                {
+                    Id = t.Id,
+                    EmailReciver = t.ReceiverEmail,
+                    EmailSent = t.SenderEmail,
+                    Title = t.Title,
+                    FilePath = t.FilePath
+                });
         }
 
         IQueryable<FileTransferModel> IFileTransferService.GetFiles()
