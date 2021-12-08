@@ -19,7 +19,7 @@ namespace Application.Services
 
         public void AddFileTransfer(FileTransferModel t) 
         {
-            fileTransferRepo.AddFileTransfer(
+            fileTransferRepo.AddFile(
                 new Domain.Models.File()
                 {
                     Id = t.Id,
