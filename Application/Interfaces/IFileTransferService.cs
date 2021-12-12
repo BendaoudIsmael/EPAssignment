@@ -11,6 +11,6 @@ namespace Application.Interfaces
     {
         public IQueryable<FileTransferModel> GetFiles();
         public void AddFileTransfer(FileTransferModel t);
-
+        void AddFileTransfer(FileCreationModel model);
     }
 }

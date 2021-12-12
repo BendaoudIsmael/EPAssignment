@@ -32,9 +32,53 @@ namespace PresentationWebApp.Controllers
             var list = service.GetFiles();
             return View(list);
         }
-        public IActionResult Create(int id)
+
+        [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
+
+        public IActionResult Create(FileCreationModel model, IFormFile logoFile)
         {
+            try
+            {
+                logger.Log(LogLevel.Information, "User accessed the Create method");
+
+                if (string.IsNullOrEmpty(model.Email))
+                {
+                    ViewBag.Error = "Name should not be left empty";
+                }
+                else
+                {
+                    if (logoFile != null)
+                    {
+                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName);
+                        logger.Log(LogLevel.Information, $"Guid generated for file {logoFile.FileName} is {newFilename}");
+
+                        string absolutePath = hostEnvironment.WebRootPath + "\\Files\\" + newFilename;
+                        logger.Log(LogLevel.Information, $"Absolute path read is {absolutePath}");
+                     
+
+                        using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
+                        {
+                            logoFile.CopyTo(fs);
+                            fs.Close();
+                        }
+
+                        logger.Log(LogLevel.Information, "File was saved successfully");
+                        model.FilePath = "\\Files\\" + newFilename;
+                    }
+
+                    service.AddFileTransfer(model);
+                    ViewBag.Message = "Blog added successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, "Error occurred while uploading file " + logoFile.FileName);
+                ViewBag.Error = "Blog was not added due to an error. try later";
+            }
+
             return View();
         }
     }
 }
+

@@ -10,8 +10,8 @@ namespace DataAccess.Repositories
 {
     public class FileTransferRepository : IFileTransferRepository
     {
-        public FileContext context { get; set; }
-        public FileTransferRepository(FileContext _context)
+        public FileTransferContext context { get; set; }
+        public FileTransferRepository(FileTransferContext _context)
         {
             context = _context;
         }

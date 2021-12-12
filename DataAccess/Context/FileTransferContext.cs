@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DataAccess.Context
 {
-    public class FileContext: DbContext
+    public class FileTransferContext: DbContext
     {
-        public FileContext(DbContextOptions<FileContext> options) : base(options) { }
+        public FileTransferContext(DbContextOptions<FileTransferContext> options) : base(options) { }
         public DbSet<File> Files { get; set; }
     }
 }

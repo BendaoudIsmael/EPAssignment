@@ -30,9 +30,43 @@ namespace Application.Services
                 });
         }
 
-        IQueryable<FileTransferModel> IFileTransferService.GetFiles()
+        public void AddFileTransfer(FileCreationModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public FileTransferModel GetFiles(int id)
+        {
+            FileTransferModel model = new FileTransferModel();
+            var file = fileTransferRepo.GetFile(id);
+            model.ReceiverEmail = file.EmailReciver;
+            model.SenderEmail = file.EmailSent;
+            model.FilePath = file.FilePath;
+            model.Id = file.Id;
+            model.Title = file.Title;
+
+            return model;
+        }
+
+        public IQueryable<FileTransferModel> GetFiles()
+        {
+            var list = fileTransferRepo.GetTransfer();
+
+            List<FileTransferModel> myResults = new List<FileTransferModel>();
+
+            foreach(var t in list)
+            {
+                myResults.Add(new FileTransferModel()
+                {
+                    ReceiverEmail = t.EmailReciver,
+                    SenderEmail = t.EmailSent,
+                    FilePath = t.FilePath,
+                    Id = t.Id,
+                    Title = t.Title
+                });
+            }
+
+            return myResults.AsQueryable();
         }
     }
 }

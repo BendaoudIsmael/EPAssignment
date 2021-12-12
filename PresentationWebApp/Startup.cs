@@ -41,13 +41,13 @@ namespace PresentationWebApp
               options.UseSqlServer(
                   Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<FileContext>(options =>
+            services.AddDbContext<FileTransferContext>(options =>
             options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
 
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<FileTransferContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
