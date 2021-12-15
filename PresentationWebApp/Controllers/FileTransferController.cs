@@ -33,6 +33,11 @@ namespace PresentationWebApp.Controllers
             return View(list);
         }
 
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         [HttpPost]
         [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
 
