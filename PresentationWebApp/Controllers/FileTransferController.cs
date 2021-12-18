@@ -33,6 +33,7 @@ namespace PresentationWebApp.Controllers
             return View(list);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -41,44 +42,43 @@ namespace PresentationWebApp.Controllers
         [HttpPost]
         [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
 
-        public IActionResult Create(FileCreationModel model, IFormFile logoFile)
+        public IActionResult Create(FileCreationModel model, IFormFile file)
         {
             try
             {
-                logger.Log(LogLevel.Information, "User accessed the Create method");
-
                 if (string.IsNullOrEmpty(model.Email))
                 {
                     ViewBag.Error = "Name should not be left empty";
                 }
                 else
                 {
-                    if (logoFile != null)
+                    if(file != null)
                     {
-                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(logoFile.FileName);
-                        logger.Log(LogLevel.Information, $"Guid generated for file {logoFile.FileName} is {newFilename}");
+                        //save the file
 
-                        string absolutePath = hostEnvironment.WebRootPath + "\\Files\\" + newFilename;
-                        logger.Log(LogLevel.Information, $"Absolute path read is {absolutePath}");
-                     
 
+                        //1. Generate a new unique filename
+                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(file.FileName);
+
+                        //2 get the absoulute path of the folder "UserFiles"
+                        string absolutePath = hostEnvironment.WebRootPath + "\\UserFiles\\" + newFilename;
+
+                        //3. save the file into that absolute file
                         using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
                         {
-                            logoFile.CopyTo(fs);
+                            file.CopyTo(fs);
                             fs.Close();
                         }
-
-                        logger.Log(LogLevel.Information, "File was saved successfully");
-                        model.FilePath = "\\Files\\" + newFilename;
+                        model.FilePath = "\\UserFiles\\" + newFilename;
                     }
 
+
                     service.AddFileTransfer(model);
-                    ViewBag.Message = "Blog added successfully";
+                    ViewBag.Message = "File added successfully";
                 }
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex, "Error occurred while uploading file " + logoFile.FileName);
                 ViewBag.Error = "Blog was not added due to an error. try later";
             }
 
