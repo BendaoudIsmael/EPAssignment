@@ -19,6 +19,7 @@ namespace PresentationWebApp.Controllers
         private ILogger<FileTransferController> logger;
         private IFileTransferService service;
 
+
         public FileTransferController(ILogger<FileTransferController> _logger, IWebHostEnvironment _hostEnvironment, IFileTransferService _service)
         {
             logger = _logger;
@@ -42,11 +43,11 @@ namespace PresentationWebApp.Controllers
         [HttpPost]
         [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
 
-        public IActionResult Create(FileCreationModel model, IFormFile file)
+        public IActionResult Create(FileTransferModel model, IFormFile file)
         {
             try
             {
-                if (string.IsNullOrEmpty(model.Email))
+                if (string.IsNullOrEmpty(model.ReceiverEmail))
                 {
                     ViewBag.Error = "Name should not be left empty";
                 }
@@ -73,6 +74,7 @@ namespace PresentationWebApp.Controllers
                     }
 
 
+              
                     service.AddFileTransfer(model);
                     ViewBag.Message = "File added successfully";
                 }
