@@ -81,6 +81,7 @@ namespace PresentationWebApp.Controllers
             }
             catch (Exception ex)
             {
+                logger.Log(LogLevel.Error, ex, "Error occured while uploading file" + file.FileName);
                 ViewBag.Error = "Blog was not added due to an error. try later";
             }
 
