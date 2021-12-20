@@ -3,6 +3,7 @@ using Application.Services;
 using DataAccess.Context;
 using DataAccess.Repositories;
 using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,21 +33,13 @@ namespace PresentationWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BloggingContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlServer(
-                  Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<FileTransferContext>(options =>
             options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
 
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<FileTransferContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -54,10 +47,6 @@ namespace PresentationWebApp
             //I am informing the injector class, what to initialize when it comes across the
             //mentioned interfaces
 
-            services.AddScoped<IBlogService, BlogService>();
-            services.AddScoped<IBlogRepository, BlogRepository>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IFileTransferService, FileTransferService>();
             services.AddScoped<IFileTransferRepository, FileTransferRepository>();
 
