@@ -75,8 +75,6 @@ namespace PresentationWebApp.Controllers
                         model.FilePath = "\\UserFiles\\" + newFilename;
                     }
 
-
-              
                     service.AddFileTransfer(model);
                     ViewBag.Message = "File added successfully";
                 }
