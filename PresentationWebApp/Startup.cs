@@ -39,7 +39,7 @@ namespace PresentationWebApp
                 Configuration.GetConnectionString("DefaultConnection")));
 
 
-            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<FileTransferContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
