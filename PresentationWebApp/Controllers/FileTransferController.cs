@@ -11,6 +11,8 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace PresentationWebApp.Controllers
 {
@@ -59,7 +61,6 @@ namespace PresentationWebApp.Controllers
                     {
                         //save the file
 
-
                         //1. Generate a new unique filename
                         string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(file.FileName);
 
@@ -86,6 +87,30 @@ namespace PresentationWebApp.Controllers
             }
 
             return View();
+        }
+
+        //string domain = ""
+
+        public void SendSimpleMessage(FileTransferModel file, string newFilePath)
+        {
+        https://app.mailgun.com/app/sending/domains/sandbox6171ca2219c746e78ae3450a4e7e90fb.mailgun.org
+
+
+            RestClient client = new RestClient();
+            client.BaseUrl = new Uri("https://api.mailgun.net/v3");
+            client.Authenticator =
+                new HttpBasicAuthenticator("api",
+                                            "b90ffe48beac683db14c64f033438dba-1831c31e-af67ed02");
+            RestRequest request = new RestRequest();
+            request.AddParameter("domain", "sandbox6171ca2219c746e78ae3450a4e7e90fb.mailgun.org", ParameterType.UrlSegment);
+            request.Resource = "{domain}/messages";
+            request.AddParameter("from", "ismael.bendaoud@outlook.com");
+            request.AddParameter("to",file.ReceiverEmail);
+
+            request.AddParameter("subject", file.Title);
+            request.AddParameter("text", file.Message + "\n The password is" + file.Password + "\n Please click on the link in order to download the file: \n" + domain + newFilePath); //it has to include the link to the file to be downloaded + the password
+            request.Method = Method.POST;
+            client.Execute(request);
         }
     }
 }
