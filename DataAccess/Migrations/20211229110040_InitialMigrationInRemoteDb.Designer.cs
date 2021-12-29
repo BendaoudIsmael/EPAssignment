@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(FileTransferContext))]
-    [Migration("20211220115259_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20211229110040_InitialMigrationInRemoteDb")]
+    partial class InitialMigrationInRemoteDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

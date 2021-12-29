@@ -89,11 +89,11 @@ namespace PresentationWebApp.Controllers
             return View();
         }
 
-        //string domain = ""
+        string domain = "http://ismaelbendaoud-001-site1.htempurl.com";
 
         public void SendSimpleMessage(FileTransferModel file, string newFilePath)
         {
-        https://app.mailgun.com/app/sending/domains/sandbox6171ca2219c746e78ae3450a4e7e90fb.mailgun.org
+       //https://app.mailgun.com/app/sending/domains/sandbox6171ca2219c746e78ae3450a4e7e90fb.mailgun.org
 
 
             RestClient client = new RestClient();
