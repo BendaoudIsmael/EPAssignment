@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using RestSharp;
 using RestSharp.Authenticators;
+using Domain.Models;
+using Aspose.Zip;
+using Aspose.Zip.Saving;
+
 
 namespace PresentationWebApp.Controllers
 {
@@ -41,6 +45,7 @@ namespace PresentationWebApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            ViewBag.FileTransfer = service.GetFiles();
             return View();
         }
 
@@ -51,60 +56,68 @@ namespace PresentationWebApp.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(model.ReceiverEmail))
-                {
-                    ViewBag.Error = "Name should not be left empty";
-                }
-                else
-                {
-                    if(file != null)
+                //1. Generate a new unique filename
+                string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(file.FileName);
+
+                //2 get the absoulute path of the folder "UserFiles"
+                string absolutePath = hostEnvironment.WebRootPath + "\\UserFiles\\" + newFilename;
+
+                if(file != null)
                     {
-                        //save the file
+                    string absolutePathWithFilename = hostEnvironment.WebRootPath + "\\UserFiles\\" + newFilename;
 
-                        //1. Generate a new unique filename
-                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(file.FileName);
-
-                        //2 get the absoulute path of the folder "UserFiles"
-                        string absolutePath = hostEnvironment.WebRootPath + "\\UserFiles\\" + newFilename;
-
-                        //3. save the file into that absolute file
-                        using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
-                        {
-                            file.CopyTo(fs);
-                            fs.Close();
-                        }
-                        model.FilePath = "\\UserFiles\\" + newFilename;
+                    using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write))
+                    {
+                        file.CopyTo(fs);
+                        fs.Close();
                     }
-
-                    service.AddFileTransfer(model);
-                    ViewBag.Message = "File added successfully";
+                    model.FilePath = newFilename;
                 }
+
+                using (FileStream zipFile = System.IO.File.Open(absolutePath + ".zip", FileMode.Create))
+                {
+                    using (FileStream source1 = System.IO.File.Open(absolutePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var archive = new Archive(new ArchiveEntrySettings()))
+                        {
+                            archive.CreateEntry(newFilename, source1);
+
+                            archive.Save(zipFile);
+                        }
+                    }
+                }
+
+            service.AddFileTransfer(model);
+
+                SendSimpleMessage(model, newFilename + ".zip");
             }
             catch (Exception ex)
             {
                 logger.Log(LogLevel.Error, ex, "Error occured while uploading file" + file.FileName);
-                ViewBag.Error = "Blog was not added due to an error. try later";
+                ViewBag.Error = "File was not added due to an error. Please try again later.";
             }
 
             return View();
+
         }
 
         string domain = "http://ismaelbendaoud-001-site1.htempurl.com/UserFiles/";
 
-        public void SendSimpleMessage(FileTransferModel file, string newFilePath)
+        //URL for site: http://ismaelbendaoud-001-site1.htempurl.com/
+
+        public void SendSimpleMessage(FileTransferModel file, string newFilename)
         {
             RestClient client = new RestClient();
             client.BaseUrl = new Uri("https://api.mailgun.net/v3");
             client.Authenticator =
-                new HttpBasicAuthenticator("api",
-                                            "b90ffe48beac683db14c64f033438dba-1831c31e-af67ed02");
+                new HttpBasicAuthenticator("api","b90ffe48beac683db14c64f033438dba-1831c31e-af67ed02");
             RestRequest request = new RestRequest();
             request.AddParameter("domain", "sandbox6171ca2219c746e78ae3450a4e7e90fb.mailgun.org", ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
             request.AddParameter("from", "ismael.bendaoud@outlook.com");
-            request.AddParameter("to",file.ReceiverEmail);
+            request.AddParameter("to", file.ReceiverEmail);
             request.AddParameter("subject", file.Title);
-            request.AddParameter("text", file.Message + "\n The password is" + file.Password + "\n Please click on the link in order to download the file: \n" + domain + newFilePath);
+            request.AddParameter("text", file.Message + "\n The password is" + file.Password + "\n Please click on the link in order to download the file: \n" + domain + newFilename);
             request.Method = Method.POST;
             client.Execute(request);
         }
