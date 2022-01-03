@@ -14,7 +14,7 @@ namespace Application.Services
        private IFileTransferRepository fileTransferRepo;
        public FileTransferService(IFileTransferRepository _fileTransferRepo)
        {
-          fileTransferRepo = _fileTransferRepo;
+          fileTransferRepo = _fileTransferRepo; //DI
        }
 
         public void AddFileTransfer(FileTransferModel t) 

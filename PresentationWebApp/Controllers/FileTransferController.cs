@@ -28,7 +28,7 @@ namespace PresentationWebApp.Controllers
         private IFileTransferService service;
 
 
-        public FileTransferController(ILogger<FileTransferController> _logger, IWebHostEnvironment _hostEnvironment, IFileTransferService _service)
+        public FileTransferController(ILogger<FileTransferController> _logger, IWebHostEnvironment _hostEnvironment, IFileTransferService _service) //DI
         {
             logger = _logger;
             hostEnvironment = _hostEnvironment;
@@ -78,17 +78,17 @@ namespace PresentationWebApp.Controllers
                 {
                     using (FileStream source1 = System.IO.File.Open(absolutePath, FileMode.Open, FileAccess.Read))
                     {
-                        using (var archive = new Archive(new ArchiveEntrySettings()))
+                        using (var archive = new Archive(new ArchiveEntrySettings(null, new TraditionalEncryptionSettings(model.Password))))
                         {
                             archive.CreateEntry(newFilename, source1);
 
-                            archive.Save(zipFile);
+                            archive.Save(zipFile, new ArchiveSaveOptions() { Encoding = System.Text.Encoding.ASCII, ArchiveComment = "Files are compressed"});
                         }
                     }
                 }
 
             service.AddFileTransfer(model);
-
+                ViewBag.Message = "File added successfully";
                 SendSimpleMessage(model, newFilename + ".zip");
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace PresentationWebApp.Controllers
             request.AddParameter("from", "ismael.bendaoud@outlook.com");
             request.AddParameter("to", file.ReceiverEmail);
             request.AddParameter("subject", file.Title);
-            request.AddParameter("text", file.Message + "\n The password is" + file.Password + "\n Please click on the link in order to download the file: \n" + domain + newFilename);
+            request.AddParameter("text", file.Message + "\n The password is " + file.Password + "\n Please click on the link in order to download the file: \n" + domain + newFilename);
             request.Method = Method.POST;
             client.Execute(request);
         }

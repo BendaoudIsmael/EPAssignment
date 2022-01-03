@@ -13,7 +13,7 @@ namespace PresentationWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger) //DI
         {
             _logger = logger;
         }
